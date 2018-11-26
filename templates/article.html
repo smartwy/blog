@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文章列表</title>
+    <style>
+        .condition a{
+            display: inline-block;
+            padding: 3px 5px;
+            border: 2px solid #dddddd;
+            margin: 5px 5px;
+        }
+        .condition a.active{
+            background-color: cornflowerblue;
+        }
+    </style>
+</head>
+{% load filter %}
+<body >
+<label style="color: red;background-color: #00ee00">-----标准HTML实现-----</label>
+    <h3>查询条件</h3>
+    <div class="condition">
+        <div>
+            {% if args.articleType_id == 0 %} {# 判断是否选中全部 #}
+                <a style="border: 5px">类型：</a><a class="active" href="article-0-{{ args.category_id }}.html">全部</a>
+            {% else %}
+                <a style="border: 5px">类型：</a><a href="article-0-{{ args.category_id }}.html">全部</a>
+            {% endif %}
+            {% for row in arty %} {# 将上一次参数作为新请求的一部分(保留需要的参数例：{{ args.category_id }}）#}
+                {% if row.id == args.articleType_id %} {# 判断是否选中  #}
+                    <a class="active" href="article-{{ row.id }}-{{ args.category_id }}.html">{{ row.caption }}</a>
+                {% else %}
+                    <a href="article-{{ row.id }}-{{ args.category_id }}.html">{{ row.caption }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div>
+            {% if args.category_id == 0 %}
+                <a style="border: 5px">分类：</a><a class="active" href="article-{{ args.articleType_id }}-0.html">全部</a>
+            {% else %}
+                <a style="border: 5px">分类：</a><a href="article-{{ args.articleType_id }}-0.html">全部</a>
+            {% endif %}
+            {% for row in cate %} {# 将上一次参数作为新请求的一部分(保留需要的参数） #}
+                {% if row.id == args.category_id %}
+                    <a class="active" href="article-{{ args.articleType_id }}-{{ row.id }}.html">{{ row.caption }}</a>
+                {% else %}
+                    <a href="article-{{ args.articleType_id }}-{{ row.id }}.html">{{ row.caption }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+<label style="color: red;background-color: #00ee00">-----自定义函数实现-----</label>
+    <h3>查询条件</h3>
+        <div>
+            {% filter_type args 'articleType_id' %}
+            {% filter_all args arty 'articleType' %}
+        </div>
+        <div>
+            {% filter_type args 'category_id' %}
+            {% filter_all args cate 'category' %}
+        </div>
+
+    </div>
+<h3>查询结果</h3>
+    <div>
+    <ul>
+        {% for item in res %}
+            <li style="color: blue;border: 2px;bottom: auto;padding: 5px">{{ item.title }}</li>
+            <lable>{{ item.content }}</lable>
+        {% endfor %}
+    </ul>
+    </div>
+</body>
+</html>

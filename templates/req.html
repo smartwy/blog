@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>requests数据</h3>
+{{ data }}
+
+<h3>JSONP操作</h3>
+    <input type="button" value="获取数据" onclick="dataresult();"/>
+    <script src="/static/jquery-1.12.4.js"></script>
+    <script>
+        function dataresult() {
+            // Ajax受阻，
+            /*var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://www.jxntv.cn/data/jmd-jxtv2.html?callback=list&_=1454376870403');
+            xhr.onreadystatechange =function () {
+              console.log(xhr.responseText);
+            };
+            xhr.send();*/
+            // JSONP模式 原生JS实现
+            /*
+            var tag = document.createElement('script');
+            tag.src='http://www.jxntv.cn/data/jmd-jxtv2.html?callback=list&_=1454376870403';
+            document.head.appendChild(tag);
+            document.head.removeChild(tag);*/
+            $.ajax({
+                url:'http://www.jxntv.cn/data/jmd-jxtv2.html?_=1454376870403',
+                type:'POST',
+                dataType:'jsonp',
+                jsonp:'callback',
+                jsonpCallback:'list',
+            });
+        }
+        function list(arg) {
+            console.log(arg)
+        }
+    </script>
+</body>
+</html>
